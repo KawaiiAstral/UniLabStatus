@@ -10,7 +10,10 @@ const targets = [
 ];
 
 const OUTPUT_FILE = 'status.json';
-const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+// 変更前
+// const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+// 変更後 (60日分保存するように変更)
+const ONE_WEEK_MS = 60 * 24 * 60 * 60 * 1000; 
 
 async function checkStatus() {
     let data = { services: [] };
