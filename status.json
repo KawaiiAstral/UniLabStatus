@@ -1,2 +1,75 @@
 {
+  "services": [
+    {
+      "id": "web-main",
+      "name": "Web Server",
+      "url": "https://main.unilabstore.com",
+      "history": [
+        {
+          "time": "2025-12-06T05:10:34.099Z",
+          "status": "operational",
+          "latency": 961
+        }
+      ],
+      "currentStatus": "operational",
+      "lastLatency": 961
+    },
+    {
+      "id": "web-account",
+      "name": "Account Server",
+      "url": "https://account.unilabstore.com",
+      "history": [
+        {
+          "time": "2025-12-06T05:10:34.099Z",
+          "status": "operational",
+          "latency": 852
+        }
+      ],
+      "currentStatus": "operational",
+      "lastLatency": 852
+    },
+    {
+      "id": "api-main",
+      "name": "API Server",
+      "url": "https://api.unilabstore.com",
+      "history": [
+        {
+          "time": "2025-12-06T05:10:34.099Z",
+          "status": "down",
+          "latency": 765
+        }
+      ],
+      "currentStatus": "down",
+      "lastLatency": 765
+    },
+    {
+      "id": "api-vrcgf",
+      "name": "Storage Server for VRCGF",
+      "url": "https://raw.githubusercontent.com/KawaiiAstral/VRCGFStorage/refs/heads/main/data.json",
+      "history": [
+        {
+          "time": "2025-12-06T05:10:34.099Z",
+          "status": "operational",
+          "latency": 198
+        }
+      ],
+      "currentStatus": "operational",
+      "lastLatency": 198
+    },
+    {
+      "id": "api-proxy",
+      "name": "Proxy Server",
+      "url": "https://www.cloudflare.com/",
+      "history": [
+        {
+          "time": "2025-12-06T05:10:34.099Z",
+          "status": "operational",
+          "latency": 490
+        }
+      ],
+      "currentStatus": "operational",
+      "lastLatency": 490
+    }
+  ],
+  "lastUpdated": "2025/12/6 14:10:34"
 }
