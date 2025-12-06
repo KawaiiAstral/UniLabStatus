@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Service Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f4f6f8; display: flex; justify-content: center; padding-top: 50px; color: #333; }
+        .container { width: 600px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { text-align: center; margin-bottom: 30px; font-size: 24px; }
+        .last-updated { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
+        
+        .status-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .status-item:hover { background: #fafafa; }
+        .service-info { display: flex; align-items: center; gap: 10px; }
+        .service-name { font-weight: bold; }
+        .ping-time { font-size: 0.8em; color: #aaa; }
+
+        .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.85em; color: white; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .operational { background-color: #2ecc71; box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3); }
+        .down { background-color: #e74c3c; box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1><i class="fas fa-server"></i> System Status</h1>
+    <p id="last-updated" class="last-updated">Checking...</p>
+    <div id="status-list"></div>
+</div>
+
+<script>
+    async function fetchStatus() {
+        try {
+            // status.json を読みに行く
+            // ※キャッシュを防ぐために時刻パラメータをつけています
+            const response = await fetch('./status.json?t=' + new Date().getTime());
+            const data = await response.json();
+
+            render(data);
+        } catch (error) {
+            console.error('ステータスの取得に失敗しました', error);
+        }
+    }
+
+    function render(data) {
+        const list = document.getElementById('status-list');
+        const timeLabel = document.getElementById('last-updated');
+        
+        list.innerHTML = '';
+        timeLabel.textContent = `最終更新: ${data.lastUpdated}`;
+
+        data.services.forEach(service => {
+            let badgeClass = service.status === 'operational' ? 'operational' : 'down';
+            let statusText = service.status === 'operational' ? '稼働中' : '停止中';
+            let icon = service.status === 'operational' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation-triangle"></i>';
+
+            const html = `
+                <div class="status-item">
+                    <div class="service-info">
+                        <span class="service-name">${service.name}</span>
+                        <span class="ping-time">${service.time}ms</span>
+                    </div>
+                    <span class="badge ${badgeClass}">${icon} ${statusText}</span>
+                </div>
+            `;
+            list.innerHTML += html;
+        });
+    }
+
+    fetchStatus();
+    // フロントエンド側でも定期的にファイルを再取得する（例: 30秒ごと）
+    setInterval(fetchStatus, 30000);
+</script>
+
+</body>
+</html>
