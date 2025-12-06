@@ -2,23 +2,32 @@ const fs = require('fs');
 const axios = require('axios');
 
 const targets = [
-    { id: 'web', name: 'Web Server', url: 'https://google.com' },
-    { id: 'api', name: 'API Server', url: 'https://example.com' }, 
+    { id: 'web-main', name: 'Web Server', url: 'https://main.unilabstore.com' },
+    { id: 'web-account', name: 'Account Server', url: 'https://account.unilabstore.com' },
+    { id: 'api-main', name: 'API Server', url: 'https://api.unilabstore.com' },
+    { id: 'api-vrcgf', name: 'Storage Server for VRCGF', url: 'https://raw.githubusercontent.com/KawaiiAstral/VRCGFStorage/refs/heads/main/data.json' },
+    { id: 'api-proxy', name: 'Proxy Server', url: 'https://www.cloudflare.com/' },
 ];
 
 const OUTPUT_FILE = 'status.json';
-// 1週間のミリ秒数 (7日 * 24時間 * 60分 * 60秒 * 1000)
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 async function checkStatus() {
-    // 1. 既存のデータを読み込む（なければ新規作成）
     let data = { services: [] };
+    
     if (fs.existsSync(OUTPUT_FILE)) {
         try {
-            data = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+            const fileContent = fs.readFileSync(OUTPUT_FILE, 'utf8');
+            if (fileContent.trim()) {
+                data = JSON.parse(fileContent);
+            }
         } catch (e) {
-            console.log("JSON読み込みエラー、新規作成します");
+            console.log("JSON読み込みエラー、またはファイルが空です。新規作成します");
         }
+    }
+
+    if (!data.services || !Array.isArray(data.services)) {
+        data.services = [];
     }
 
     const now = new Date();
@@ -26,7 +35,7 @@ async function checkStatus() {
 
     console.log(`[${timestampISO}] 監視開始...`);
 
-    // 2. 各サービスのチェックと履歴の更新
+    // 2. 各サービスのチェック
     for (const target of targets) {
         let status = 'down';
         let responseTime = 0;
@@ -42,44 +51,40 @@ async function checkStatus() {
         const end = Date.now();
         responseTime = end - start;
 
-        // 対象サービスのデータを探す
         let serviceData = data.services.find(s => s.id === target.id);
         
-        // 初めてのサービスなら枠を作成
         if (!serviceData) {
             serviceData = {
                 id: target.id,
                 name: target.name,
                 url: target.url,
-                history: [] // ここにログが溜まる
+                history: []
             };
             data.services.push(serviceData);
         }
 
-        // 3. 新しい結果を履歴の先頭に追加
+        if (!serviceData.history) {
+            serviceData.history = [];
+        }
+
         const newLog = {
             time: timestampISO,
             status: status,
             latency: responseTime
         };
-        // unshiftで先頭に追加（最新が先頭）
         serviceData.history.unshift(newLog);
 
-        // 4. 1週間より古いデータを削除 (フィルタリング)
         serviceData.history = serviceData.history.filter(log => {
             const logTime = new Date(log.time).getTime();
             return (now.getTime() - logTime) < ONE_WEEK_MS;
         });
 
-        // 5. 最新の状態をトップレベルにも更新（表示しやすくするため）
         serviceData.currentStatus = status;
         serviceData.lastLatency = responseTime;
     }
 
-    // 全体の最終更新日時
     data.lastUpdated = now.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
 
-    // 保存
     fs.writeFileSync(OUTPUT_FILE, JSON.stringify(data, null, 2));
     console.log('履歴を更新しました。');
 }
