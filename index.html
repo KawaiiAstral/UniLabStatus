@@ -66,7 +66,6 @@
         <p id="last-updated">Last updated: --</p>
     </footer>
 </div>
-
 <script>
     async function fetchStatus() {
         try {
@@ -75,37 +74,52 @@
             render(data);
         } catch (error) {
             console.error(error);
+            // エラー時はローディング表示を更新
+            document.getElementById('overall-bar').innerHTML = '<span>Failed to load status</span>';
+            document.getElementById('overall-bar').style.backgroundColor = '#95a5a6';
         }
     }
 
     function render(data) {
         const list = document.getElementById('component-list');
         const overallBar = document.getElementById('overall-bar');
-        document.getElementById('last-updated').textContent = `Last updated: ${data.lastUpdated}`;
+        const lastUpdatedLabel = document.getElementById('last-updated');
+
+        if(lastUpdatedLabel) {
+            lastUpdatedLabel.textContent = `Last updated: ${data.lastUpdated}`;
+        }
         
         list.innerHTML = '';
         let globalStatus = 'operational';
+
+        // データが空の場合のガード
+        if (!data.services) {
+            list.innerHTML = '<div style="padding:20px; text-align:center;">No service data found.</div>';
+            return;
+        }
 
         data.services.forEach(service => {
             // 現在のステータス
             const isUp = service.currentStatus === 'operational';
             if (!isUp) globalStatus = 'down';
 
-            // 履歴バーの生成（最大30件程度を表示）
-            // historyは [最新, 古い, ...] の順なので、逆順にして左から右へ時系列にする
-            const historyToShow = service.history.slice(0, 40).reverse(); 
+            // ★ここが修正ポイント★
+            // historyがない(undefined)場合は、空の配列 [] を代わりに入れる
+            const history = service.history || [];
+            
+            // 履歴バーの生成
+            const historyToShow = history.slice(0, 40).reverse(); 
             
             let barsHtml = historyToShow.map(log => {
                 const date = new Date(log.time);
                 const timeStr = date.getHours() + ':' + date.getMinutes().toString().padStart(2, '0');
                 const colorClass = log.status === 'operational' ? 'status-bg-operational' : 'status-bg-down';
-                // 高さをレスポンスタイムに応じて少し変える演出（最低40%〜最大100%）
                 let height = '100%'; 
                 
                 return `<div class="history-segment ${colorClass}" style="height: ${height};" data-title="${timeStr} - ${log.status}"></div>`;
             }).join('');
 
-            // 足りない分をグレーで埋める（見た目のバランス用）
+            // 足りない分をグレーで埋める
             const emptyCount = 40 - historyToShow.length;
             for(let i=0; i<emptyCount; i++) {
                 barsHtml = `<div class="history-segment" style="background-color:#eee;"></div>` + barsHtml;
