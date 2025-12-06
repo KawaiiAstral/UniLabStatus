@@ -4,68 +4,246 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Status</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --color-operational: #2fcc66;
-            --color-degraded: #f1c40f;
-            --color-outage: #e74c3c;
-            --bg-color: #ffffff;
-            --text-main: #333;
-            --border-color: #e0e0e0;
+            --color-operational: #2fcc66; 
+            --color-degraded: #f1c40f;  
+            --color-outage: #e74c3c;  
+            
+            --bg-body: #ffffff;
+            --text-main: #172b4d;       
+            --text-light: #6b778c;      
+            --border-color: #ebecf0;
+            --link-color: #0052cc;
         }
-        body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; color: var(--text-main); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .layout-container { width: 100%; max-width: 860px; padding: 40px 20px; }
-        
-        header { margin-bottom: 30px; }
-        .logo { font-size: 1.8rem; font-weight: 600; color: #172b4d; }
 
-        .overall-status { background-color: var(--color-operational); color: white; padding: 16px 24px; border-radius: 4px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .layout-container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+        .subscribe-btn {
+            background-color: #0052cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: not-allowed; 
+            opacity: 0.8;
+        }
+
+        .overall-status {
+            background-color: var(--color-operational);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .components-group {
+            margin-bottom: 60px;
+        }
+        .group-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .component-item {
+            display: flex;
+            flex-direction: column; 
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
         
-        .components-container { border: 1px solid var(--border-color); border-radius: 4px; background: white; overflow: hidden; }
-        
-        .component-item { padding: 20px 24px; border-bottom: 1px solid var(--border-color); }
-        .component-item:last-child { border-bottom: none; }
-        
-        .component-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .component-name { font-size: 1rem; font-weight: 600; }
-        .component-status { font-size: 0.9rem; }
-        
-        /* 履歴バーのスタイル */
-        .history-bar { display: flex; gap: 2px; height: 30px; align-items: flex-end; }
-        .history-segment { flex: 1; background-color: #eee; border-radius: 2px; min-width: 4px; transition: all 0.2s; position: relative; }
-        /* ツールチップ */
-        .history-segment:hover::after {
+        .component-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .component-name {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2e3b4e;
+        }
+        .component-link {
+            font-size: 0.8rem;
+            color: var(--link-color);
+            margin-left: 8px;
+            text-decoration: none;
+        }
+        .component-link:hover { text-decoration: underline; }
+
+        .component-status {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-operational);
+        }
+        .status-down { color: var(--color-outage); }
+
+        .uptime-graph {
+            display: flex;
+            gap: 2px;
+            height: 34px;
+            align-items: flex-end;
+            margin-top: 5px;
+        }
+        .uptime-bar {
+            flex: 1;
+            background-color: var(--color-operational);
+            border-radius: 2px;
+            min-width: 3px;
+            opacity: 0.8;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .uptime-bar:hover {
+            opacity: 1;
+            transform: scaleY(1.15);
+        }
+        .bar-down { background-color: var(--color-outage); }
+        .bar-empty { background-color: #eee; }
+
+        .uptime-bar:hover::after {
             content: attr(data-title);
-            position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%);
-            background: #333; color: #fff; padding: 4px 8px; font-size: 10px; border-radius: 4px; white-space: nowrap; z-index: 10;
+            position: absolute;
+            bottom: 100%; left: 50%;
+            transform: translateX(-50%);
+            background: #172b4d; color: white;
+            padding: 5px 10px; font-size: 0.75rem;
+            border-radius: 4px; white-space: nowrap; pointer-events: none;
+            margin-bottom: 5px; z-index: 10;
+        }
+
+        .graph-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .incidents-section {
+            margin-top: 50px;
+        }
+        .incidents-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .incident-item {
+            margin-bottom: 30px;
+        }
+        .incident-date {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .incident-body {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+        .incident-status-tag {
+            color: var(--color-outage);
+            font-weight: 600;
         }
         
-        .status-bg-operational { background-color: var(--color-operational); }
-        .status-bg-down { background-color: var(--color-outage); }
-        .status-text-operational { color: var(--color-operational); }
-        .status-text-down { color: var(--color-outage); }
-
-        footer { margin-top: 50px; font-size: 0.8rem; color: #7e8c8d; text-align: center; }
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="layout-container">
-    <header><div class="logo">System Status</div></header>
+    
+    <header>
+        <div class="logo">
+            UniLab Status
+        </div>
+        <button class="subscribe-btn">Subscribe to Updates</button>
+    </header>
 
     <div id="overall-bar" class="overall-status">
-        <span>Loading...</span>
+        <span>Loading status...</span>
+        <i class="fas fa-circle-notch fa-spin"></i>
     </div>
 
-    <div class="components-container" id="component-list"></div>
+    <div class="components-group">
+        <div id="component-list"></div>
+    </div>
+
+    <div class="incidents-section">
+        <h2 class="incidents-header">Past Incidents</h2>
+        <div id="incident-list">
+            <p style="color: #888;">No incidents reported.</p>
+        </div>
+    </div>
 
     <footer>
-        <p id="last-updated">Last updated: --</p>
+        <div id="last-updated">Last check: --</div>
+        <div>
+            <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp; 
+            <a href="#" style="color: inherit; text-decoration: none;">Terms</a>
+        </div>
     </footer>
+
 </div>
+
 <script>
     async function fetchStatus() {
         try {
@@ -74,85 +252,125 @@
             render(data);
         } catch (error) {
             console.error(error);
-            // エラー時はローディング表示を更新
-            document.getElementById('overall-bar').innerHTML = '<span>Failed to load status</span>';
-            document.getElementById('overall-bar').style.backgroundColor = '#95a5a6';
+            document.getElementById('overall-bar').style.backgroundColor = '#999';
+            document.getElementById('overall-bar').innerHTML = '<span>System Status Loading Failed</span>';
         }
     }
 
     function render(data) {
         const list = document.getElementById('component-list');
         const overallBar = document.getElementById('overall-bar');
-        const lastUpdatedLabel = document.getElementById('last-updated');
+        const lastUpdated = document.getElementById('last-updated');
+        const incidentList = document.getElementById('incident-list');
 
-        if(lastUpdatedLabel) {
-            lastUpdatedLabel.textContent = `Last updated: ${data.lastUpdated}`;
-        }
+        if(lastUpdated) lastUpdated.textContent = `Last check: ${data.lastUpdated}`;
         
         list.innerHTML = '';
-        let globalStatus = 'operational';
-
-        // データが空の場合のガード
-        if (!data.services) {
-            list.innerHTML = '<div style="padding:20px; text-align:center;">No service data found.</div>';
+        
+        if (!data.services || !Array.isArray(data.services)) {
+            list.innerHTML = '<p>No data available.</p>';
             return;
         }
 
+        let allOperational = true;
+        let incidentHistory = []; 
         data.services.forEach(service => {
-            // 現在のステータス
             const isUp = service.currentStatus === 'operational';
-            if (!isUp) globalStatus = 'down';
+            if (!isUp) allOperational = false;
 
-            // ★ここが修正ポイント★
-            // historyがない(undefined)場合は、空の配列 [] を代わりに入れる
             const history = service.history || [];
-            
-            // 履歴バーの生成
-            const historyToShow = history.slice(0, 40).reverse(); 
-            
+            const historyToShow = history.slice(0, 60).reverse();
+
+            history.forEach(log => {
+                if (log.status !== 'operational') {
+                    incidentHistory.push({
+                        name: service.name,
+                        time: log.time,
+                        status: log.status
+                    });
+                }
+            });
+
             let barsHtml = historyToShow.map(log => {
                 const date = new Date(log.time);
-                const timeStr = date.getHours() + ':' + date.getMinutes().toString().padStart(2, '0');
-                const colorClass = log.status === 'operational' ? 'status-bg-operational' : 'status-bg-down';
-                let height = '100%'; 
+                const timeStr = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+                const barClass = log.status === 'operational' ? '' : 'bar-down';
+                const tooltip = `${timeStr} - ${log.status === 'operational' ? 'Operational' : 'Outage'}`;
                 
-                return `<div class="history-segment ${colorClass}" style="height: ${height};" data-title="${timeStr} - ${log.status}"></div>`;
+                return `<div class="uptime-bar ${barClass}" data-title="${tooltip}"></div>`;
             }).join('');
 
-            // 足りない分をグレーで埋める
-            const emptyCount = 40 - historyToShow.length;
+            const emptyCount = 60 - historyToShow.length;
             for(let i=0; i<emptyCount; i++) {
-                barsHtml = `<div class="history-segment" style="background-color:#eee;"></div>` + barsHtml;
+                barsHtml = `<div class="uptime-bar bar-empty"></div>` + barsHtml;
             }
 
             const html = `
                 <div class="component-item">
-                    <div class="component-header">
-                        <span class="component-name">${service.name}</span>
-                        <span class="component-status ${isUp ? 'status-text-operational' : 'status-text-down'}">
+                    <div class="component-row">
+                        <span class="component-name">
+                            ${service.name}
+                            <a href="${service.url}" target="_blank" class="component-link"><i class="fas fa-external-link-alt"></i></a>
+                        </span>
+                        <span class="component-status ${isUp ? '' : 'status-down'}">
                             ${isUp ? 'Operational' : 'Major Outage'}
                         </span>
                     </div>
-                    <div class="history-bar">
+                    <div class="uptime-graph">
                         ${barsHtml}
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.7em; color:#aaa; margin-top:4px;">
-                        <span>Past</span>
-                        <span>Now</span>
+                    <div class="graph-legend">
+                        <span>60 checks ago</span>
+                        <span>Today</span>
                     </div>
                 </div>
             `;
             list.innerHTML += html;
         });
 
-        // 全体バーの更新
-        if (globalStatus === 'operational') {
+        if (allOperational) {
             overallBar.style.backgroundColor = 'var(--color-operational)';
-            overallBar.innerHTML = 'All Systems Operational <i class="fas fa-check-circle"></i>';
+            overallBar.innerHTML = 'All Systems Operational';
         } else {
             overallBar.style.backgroundColor = 'var(--color-outage)';
-            overallBar.innerHTML = 'Some systems are down <i class="fas fa-exclamation-triangle"></i>';
+            overallBar.innerHTML = 'Some systems are experiencing outages';
         }
+
+        renderIncidents(incidentHistory, incidentList);
+    }
+
+    function renderIncidents(incidents, container) {
+        if (incidents.length === 0) {
+            container.innerHTML = '<p style="color:#6b778c;">No incidents reported in the monitored period.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        
+        incidents.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        const grouped = {};
+        incidents.forEach(inc => {
+            const dateStr = new Date(inc.time).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+            if (!grouped[dateStr]) grouped[dateStr] = [];
+            grouped[dateStr].push(inc);
+        });
+
+        Object.keys(grouped).forEach(date => {
+            const items = grouped[date];
+            const serviceNames = [...new Set(items.map(i => i.name))].join(', ');
+            
+            const html = `
+                <div class="incident-item">
+                    <div class="incident-date">${date}</div>
+                    <div class="incident-body">
+                        <span class="incident-status-tag">Major Outage</span> 
+                        - Connectivity issues detected with <strong>${serviceNames}</strong>.
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
     }
 
     fetchStatus();
