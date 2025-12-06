@@ -4,24 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Status</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --color-operational: #2fcc66; 
-            --color-degraded: #f1c40f;  
-            --color-outage: #e74c3c;  
-            
+            --color-operational: #10b981; /* ChatGPTっぽい少し明るい緑 */
+            --color-outage: #ef4444;
             --bg-body: #ffffff;
-            --text-main: #172b4d;       
-            --text-light: #6b778c;      
-            --border-color: #ebecf0;
-            --link-color: #0052cc;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
@@ -29,219 +26,166 @@
             line-height: 1.5;
         }
 
-        .layout-container {
-            max-width: 980px;
+        .container {
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
+        /* ヘッダー */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 40px;
         }
         .logo {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
-            color: var(--text-main);
         }
-        .subscribe-btn {
-            background-color: #0052cc;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: not-allowed; 
-            opacity: 0.8;
-        }
-
-        .overall-status {
+        
+        /* メインステータスバー */
+        .status-banner {
             background-color: var(--color-operational);
             color: white;
-            padding: 16px 24px;
-            border-radius: 4px;
+            padding: 16px 20px;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .components-group {
+        /* サービスリスト */
+        .service-group {
             margin-bottom: 60px;
         }
-        .group-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--text-main);
-            padding-bottom: 10px;
-            display: inline-block;
+        .service-item {
+            margin-bottom: 24px;
         }
-
-        .component-item {
-            display: flex;
-            flex-direction: column; 
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .component-row {
+        .service-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 8px;
-        }
-
-        .component-name {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
-            color: #2e3b4e;
         }
-        .component-link {
-            font-size: 0.8rem;
-            color: var(--link-color);
-            margin-left: 8px;
-            text-decoration: none;
-        }
-        .component-link:hover { text-decoration: underline; }
-
-        .component-status {
-            font-size: 0.9rem;
-            font-weight: 500;
+        .service-link {
             color: var(--color-operational);
+            text-decoration: none;
+            font-size: 0.8em;
+            margin-left: 8px;
         }
-        .status-down { color: var(--color-outage); }
+        .status-text {
+            color: var(--color-operational);
+            font-weight: 600;
+        }
+        .status-text.down { color: var(--color-outage); }
 
-        .uptime-graph {
+        /* Uptime Bars (バーコード) */
+        .uptime-bars {
             display: flex;
             gap: 2px;
-            height: 34px;
-            align-items: flex-end;
-            margin-top: 5px;
+            height: 36px;
         }
-        .uptime-bar {
+        .bar {
             flex: 1;
             background-color: var(--color-operational);
             border-radius: 2px;
-            min-width: 3px;
             opacity: 0.8;
             transition: all 0.2s;
             position: relative;
         }
-        .uptime-bar:hover {
-            opacity: 1;
-            transform: scaleY(1.15);
-        }
-        .bar-down { background-color: var(--color-outage); }
-        .bar-empty { background-color: #eee; }
+        .bar:hover { opacity: 1; transform: scaleY(1.1); }
+        .bar.down { background-color: var(--color-outage); }
+        .bar.empty { background-color: #f3f4f6; }
 
-        .uptime-bar:hover::after {
-            content: attr(data-title);
+        /* ツールチップ */
+        .bar:hover::after {
+            content: attr(data-tooltip);
             position: absolute;
-            bottom: 100%; left: 50%;
-            transform: translateX(-50%);
-            background: #172b4d; color: white;
-            padding: 5px 10px; font-size: 0.75rem;
+            bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #1f2937; color: white;
+            padding: 4px 8px; font-size: 11px;
             border-radius: 4px; white-space: nowrap; pointer-events: none;
-            margin-bottom: 5px; z-index: 10;
+            margin-bottom: 6px; z-index: 10;
         }
 
-        .graph-legend {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-light);
-            margin-top: 6px;
-        }
-
-        .incidents-section {
-            margin-top: 50px;
-        }
-        .incidents-header {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+        /* --- 過去ログ (Past Incidents) --- */
+        .history-section h2 {
+            font-size: 1.25rem;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
         }
-        .incident-item {
+
+        .month-block {
             margin-bottom: 30px;
         }
-        .incident-date {
+        .month-title {
+            font-size: 1.1rem;
             font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-        .incident-body {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            line-height: 1.6;
-            margin-bottom: 5px;
-        }
-        .incident-status-tag {
-            color: var(--color-outage);
-            font-weight: 600;
+            margin-bottom: 12px;
         }
         
+        .incident-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .incident-date {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .incident-title {
+            font-weight: 500;
+            color: var(--color-outage);
+        }
+        .no-incidents {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
         footer {
             margin-top: 60px;
             padding-top: 20px;
             border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
+            text-align: center;
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: var(--text-muted);
         }
-        
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="layout-container">
-    
+<div class="container">
     <header>
-        <div class="logo">
-            UniLab Status
-        </div>
-        <button class="subscribe-btn">Subscribe to Updates</button>
+        <div class="logo">UniLab Status</div>
     </header>
 
-    <div id="overall-bar" class="overall-status">
+    <div id="overall-bar" class="status-banner">
         <span>Loading status...</span>
-        <i class="fas fa-circle-notch fa-spin"></i>
     </div>
 
-    <div class="components-group">
-        <div id="component-list"></div>
-    </div>
-
-    <div class="incidents-section">
-        <h2 class="incidents-header">Past Incidents</h2>
-        <div id="incident-list">
-            <p style="color: #888;">No incidents reported.</p>
+    <div id="service-list" class="service-group">
         </div>
+
+    <div class="history-section">
+        <h2>Past Incidents</h2>
+        <div id="history-container">
+            </div>
     </div>
 
     <footer>
-        <div id="last-updated">Last check: --</div>
-        <div>
-            <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a> &nbsp;|&nbsp; 
-            <a href="#" style="color: inherit; text-decoration: none;">Terms</a>
-        </div>
+        <p id="last-updated">Last updated: --</p>
     </footer>
-
 </div>
 
 <script>
@@ -252,35 +196,38 @@
             render(data);
         } catch (error) {
             console.error(error);
-            document.getElementById('overall-bar').style.backgroundColor = '#999';
-            document.getElementById('overall-bar').innerHTML = '<span>System Status Loading Failed</span>';
+            document.getElementById('overall-bar').style.backgroundColor = '#9ca3af';
+            document.getElementById('overall-bar').innerText = 'Status Unknown';
         }
     }
 
     function render(data) {
-        const list = document.getElementById('component-list');
+        const list = document.getElementById('service-list');
         const overallBar = document.getElementById('overall-bar');
-        const lastUpdated = document.getElementById('last-updated');
-        const incidentList = document.getElementById('incident-list');
+        const historyContainer = document.getElementById('history-container');
+        document.getElementById('last-updated').textContent = `Last updated: ${data.lastUpdated}`;
 
-        if(lastUpdated) lastUpdated.textContent = `Last check: ${data.lastUpdated}`;
-        
         list.innerHTML = '';
-        
+        historyContainer.innerHTML = '';
+
         if (!data.services || !Array.isArray(data.services)) {
             list.innerHTML = '<p>No data available.</p>';
             return;
         }
 
         let allOperational = true;
-        let incidentHistory = []; 
+        let incidentHistory = [];
+
+        // 1. サービスごとのループ（上のグラフ部分）
         data.services.forEach(service => {
             const isUp = service.currentStatus === 'operational';
             if (!isUp) allOperational = false;
 
             const history = service.history || [];
+            // ChatGPTっぽく60本バーを表示
             const historyToShow = history.slice(0, 60).reverse();
 
+            // 履歴収集
             history.forEach(log => {
                 if (log.status !== 'operational') {
                     incidentHistory.push({
@@ -291,86 +238,103 @@
                 }
             });
 
+            // バーコード生成
             let barsHtml = historyToShow.map(log => {
                 const date = new Date(log.time);
                 const timeStr = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-                const barClass = log.status === 'operational' ? '' : 'bar-down';
-                const tooltip = `${timeStr} - ${log.status === 'operational' ? 'Operational' : 'Outage'}`;
+                const barClass = log.status === 'operational' ? '' : 'down';
+                const statusStr = log.status === 'operational' ? 'Operational' : 'Outage';
                 
-                return `<div class="uptime-bar ${barClass}" data-title="${tooltip}"></div>`;
+                return `<div class="bar ${barClass}" data-tooltip="${timeStr} - ${statusStr}"></div>`;
             }).join('');
 
+            // 空白埋め
             const emptyCount = 60 - historyToShow.length;
             for(let i=0; i<emptyCount; i++) {
-                barsHtml = `<div class="uptime-bar bar-empty"></div>` + barsHtml;
+                barsHtml = `<div class="bar empty"></div>` + barsHtml;
             }
 
             const html = `
-                <div class="component-item">
-                    <div class="component-row">
-                        <span class="component-name">
-                            ${service.name}
-                            <a href="${service.url}" target="_blank" class="component-link"><i class="fas fa-external-link-alt"></i></a>
+                <div class="service-item">
+                    <div class="service-header">
+                        <span>
+                            ${service.name} 
+                            <a href="${service.url}" target="_blank" class="service-link"><i class="fas fa-external-link-alt"></i></a>
                         </span>
-                        <span class="component-status ${isUp ? '' : 'status-down'}">
-                            ${isUp ? 'Operational' : 'Major Outage'}
-                        </span>
+                        <span class="status-text ${isUp ? '' : 'down'}">${isUp ? 'Operational' : 'Outage'}</span>
                     </div>
-                    <div class="uptime-graph">
+                    <div class="uptime-bars">
                         ${barsHtml}
-                    </div>
-                    <div class="graph-legend">
-                        <span>60 checks ago</span>
-                        <span>Today</span>
                     </div>
                 </div>
             `;
             list.innerHTML += html;
         });
 
+        // 2. 全体ステータス更新
         if (allOperational) {
             overallBar.style.backgroundColor = 'var(--color-operational)';
             overallBar.innerHTML = 'All Systems Operational';
         } else {
             overallBar.style.backgroundColor = 'var(--color-outage)';
-            overallBar.innerHTML = 'Some systems are experiencing outages';
+            overallBar.innerHTML = 'Some systems are experiencing issues';
         }
 
-        renderIncidents(incidentHistory, incidentList);
+        // 3. 過去ログ（月別表示）の生成ロジック
+        renderMonthlyHistory(incidentHistory, historyContainer);
     }
 
-    function renderIncidents(incidents, container) {
-        if (incidents.length === 0) {
-            container.innerHTML = '<p style="color:#6b778c;">No incidents reported in the monitored period.</p>';
-            return;
-        }
+    function renderMonthlyHistory(incidents, container) {
+        // 現在の月を取得
+        const today = new Date();
+        const monthsToShow = 3; // 過去3ヶ月分表示する
 
-        container.innerHTML = '';
-        
-        incidents.sort((a, b) => new Date(b.time) - new Date(a.time));
+        for (let i = 0; i < monthsToShow; i++) {
+            // 表示対象の「年」と「月」を計算
+            const targetDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            const year = targetDate.getFullYear();
+            const month = targetDate.getMonth(); // 0-11
+            const monthName = targetDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
-        const grouped = {};
-        incidents.forEach(inc => {
-            const dateStr = new Date(inc.time).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
-            if (!grouped[dateStr]) grouped[dateStr] = [];
-            grouped[dateStr].push(inc);
-        });
+            // この月のインシデントだけを抽出
+            const monthlyIncidents = incidents.filter(inc => {
+                const incDate = new Date(inc.time);
+                return incDate.getFullYear() === year && incDate.getMonth() === month;
+            });
 
-        Object.keys(grouped).forEach(date => {
-            const items = grouped[date];
-            const serviceNames = [...new Set(items.map(i => i.name))].join(', ');
-            
-            const html = `
-                <div class="incident-item">
-                    <div class="incident-date">${date}</div>
-                    <div class="incident-body">
-                        <span class="incident-status-tag">Major Outage</span> 
-                        - Connectivity issues detected with <strong>${serviceNames}</strong>.
-                    </div>
+            // HTML生成
+            let contentHtml = '';
+            if (monthlyIncidents.length === 0) {
+                contentHtml = `<div class="no-incidents">No incidents reported.</div>`;
+            } else {
+                // 日付でソート
+                monthlyIncidents.sort((a, b) => new Date(b.time) - new Date(a.time));
+                // 重複排除（簡易的）
+                const uniqueDates = [...new Set(monthlyIncidents.map(inc => new Date(inc.time).toDateString()))];
+                
+                uniqueDates.forEach(dateStr => {
+                    // その日のインシデントサービス名を集める
+                    const incsOnDate = monthlyIncidents.filter(inc => new Date(inc.time).toDateString() === dateStr);
+                    const serviceNames = [...new Set(incsOnDate.map(i => i.name))].join(', ');
+                    
+                    contentHtml += `
+                        <div class="incident-item">
+                            <div class="incident-title">Major Outage - ${serviceNames}</div>
+                            <div class="incident-date">${dateStr}</div>
+                            <div style="font-size:0.9em; color:#555;">Connectivity issues were detected automatically.</div>
+                        </div>
+                    `;
+                });
+            }
+
+            const monthBlock = `
+                <div class="month-block">
+                    <div class="month-title">${monthName}</div>
+                    ${contentHtml}
                 </div>
             `;
-            container.innerHTML += html;
-        });
+            container.innerHTML += monthBlock;
+        }
     }
 
     fetchStatus();
