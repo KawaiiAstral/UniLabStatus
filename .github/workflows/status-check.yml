@@ -1,0 +1,36 @@
+name: Check Server Status
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' 
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Node.jsをセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: ライブラリをインストール
+        run: npm install
+
+      - name: 監視スクリプトを実行
+        run: node monitor.js
+
+      - name: 結果をコミットしてプッシュ
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          # 変更があった場合のみコミット
+          git add status.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update status [skip ci]" && git push)
