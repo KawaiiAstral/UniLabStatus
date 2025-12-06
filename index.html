@@ -2,75 +2,236 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Status</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f4f6f8; display: flex; justify-content: center; padding-top: 50px; color: #333; }
-        .container { width: 600px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        h1 { text-align: center; margin-bottom: 30px; font-size: 24px; }
-        .last-updated { text-align: center; font-size: 12px; color: #888; margin-bottom: 20px; }
-        
-        .status-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid #eee; transition: background 0.2s; }
-        .status-item:hover { background: #fafafa; }
-        .service-info { display: flex; align-items: center; gap: 10px; }
-        .service-name { font-weight: bold; }
-        .ping-time { font-size: 0.8em; color: #aaa; }
+        :root {
+            /* Statuspage風のカラーパレット */
+            --color-operational: #2fcc66; /* あの鮮やかな緑 */
+            --color-degraded: #f1c40f;    /* 黄色 */
+            --color-outage: #e74c3c;      /* 赤 */
+            --bg-color: #ffffff;
+            --text-main: #333333;
+            --text-secondary: #7e8c8d;
+            --border-color: #e0e0e0;
+        }
 
-        .badge { padding: 6px 14px; border-radius: 20px; font-size: 0.85em; color: white; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .operational { background-color: #2ecc71; box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3); }
-        .down { background-color: #e74c3c; box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3); }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #fcfcfc;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* メインコンテナ */
+        .layout-container {
+            width: 100%;
+            max-width: 860px; /* Statuspageの標準的な幅 */
+            padding: 40px 20px;
+        }
+
+        /* ヘッダー部分 */
+        header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #172b4d;
+        }
+
+        /* 全体のステータスバー（あの大きな緑のバー） */
+        .overall-status {
+            background-color: var(--color-operational);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 4px; /* 角丸は小さめに */
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        /* コンポーネントリスト */
+        .components-container {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: white;
+            overflow: hidden;
+        }
+        
+        .component-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.1s;
+        }
+        .component-item:last-child {
+            border-bottom: none;
+        }
+        .component-item:hover {
+            background-color: #fbfbfb;
+        }
+
+        .component-name {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .component-status {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--color-operational); /* デフォルトは緑文字 */
+        }
+
+        /* 応答速度の表示（少し控えめに） */
+        .meta-info {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-left: 10px;
+        }
+
+        /* フッター */
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        /* 状態ごとの色クラス */
+        .status-text-operational { color: var(--color-operational); }
+        .status-text-degraded { color: var(--color-degraded); }
+        .status-text-outage { color: var(--color-outage); }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1><i class="fas fa-server"></i> System Status</h1>
-    <p id="last-updated" class="last-updated">Checking...</p>
-    <div id="status-list"></div>
+<div class="layout-container">
+    <header>
+        <div class="logo">System Status</div>
+        </header>
+
+    <div id="overall-bar" class="overall-status">
+        <span>Loading status...</span>
+        <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+
+    <div class="components-container" id="component-list">
+        </div>
+
+    <footer>
+        <p id="last-updated">Last updated: --</p>
+        <p>Powered by GitHub Actions & Git Scraping</p>
+    </footer>
 </div>
 
 <script>
+    // 設定：文言の定義
+    const TEXT_MAP = {
+        operational: 'Operational',
+        down: 'Major Outage',
+        degraded: 'Degraded Performance'
+    };
+
     async function fetchStatus() {
         try {
-            // status.json を読みに行く
-            // ※キャッシュを防ぐために時刻パラメータをつけています
             const response = await fetch('./status.json?t=' + new Date().getTime());
+            if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
-
             render(data);
         } catch (error) {
-            console.error('ステータスの取得に失敗しました', error);
+            console.error('Failed to fetch status:', error);
+            document.getElementById('overall-bar').style.backgroundColor = '#95a5a6'; // グレー
+            document.getElementById('overall-bar').innerHTML = '<span>Unable to load status data</span>';
         }
     }
 
     function render(data) {
-        const list = document.getElementById('status-list');
-        const timeLabel = document.getElementById('last-updated');
+        const list = document.getElementById('component-list');
+        const overallBar = document.getElementById('overall-bar');
+        const lastUpdated = document.getElementById('last-updated');
         
         list.innerHTML = '';
-        timeLabel.textContent = `最終更新: ${data.lastUpdated}`;
+        lastUpdated.textContent = `Last updated: ${data.lastUpdated}`;
 
+        let hasDown = false;
+        let hasDegraded = false;
+
+        // 個別のコンポーネントを描画
         data.services.forEach(service => {
-            let badgeClass = service.status === 'operational' ? 'operational' : 'down';
-            let statusText = service.status === 'operational' ? '稼働中' : '停止中';
-            let icon = service.status === 'operational' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation-triangle"></i>';
+            // ステータスの判定
+            let statusKey = service.status === 'operational' ? 'operational' : 'down';
+            // ※応答時間が遅い場合(例:2秒以上)はDegradedにするロジックを入れるならここ
+            if (service.time > 2000 && statusKey === 'operational') {
+                statusKey = 'degraded';
+            }
+
+            // 全体ステータス判定用フラグ
+            if (statusKey === 'down') hasDown = true;
+            if (statusKey === 'degraded') hasDegraded = true;
+
+            // 文字色の決定
+            const colorClass = `status-text-${statusKey}`;
+            const statusLabel = TEXT_MAP[statusKey];
 
             const html = `
-                <div class="status-item">
-                    <div class="service-info">
-                        <span class="service-name">${service.name}</span>
-                        <span class="ping-time">${service.time}ms</span>
+                <div class="component-item">
+                    <div class="component-name">
+                        ${service.name}
+                        <span class="meta-info">${service.time}ms</span>
                     </div>
-                    <span class="badge ${badgeClass}">${icon} ${statusText}</span>
+                    <div class="component-status ${colorClass}">
+                        ${statusLabel}
+                    </div>
                 </div>
             `;
             list.innerHTML += html;
         });
+
+        // 全体のステータスバーを更新
+        updateOverallBar(hasDown, hasDegraded);
+    }
+
+    function updateOverallBar(hasDown, hasDegraded) {
+        const bar = document.getElementById('overall-bar');
+        
+        if (hasDown) {
+            bar.style.backgroundColor = 'var(--color-outage)'; // 赤
+            bar.innerHTML = '<span>Some systems are experiencing outages</span> <i class="fas fa-times-circle"></i>';
+        } else if (hasDegraded) {
+            bar.style.backgroundColor = 'var(--color-degraded)'; // 黄
+            bar.innerHTML = '<span>Some systems are degraded</span> <i class="fas fa-exclamation-triangle"></i>';
+        } else {
+            bar.style.backgroundColor = 'var(--color-operational)'; // 緑
+            bar.innerHTML = '<span>All Systems Operational</span> <i class="fas fa-check-circle"></i>';
+        }
     }
 
     fetchStatus();
-    // フロントエンド側でも定期的にファイルを再取得する（例: 30秒ごと）
-    setInterval(fetchStatus, 30000);
 </script>
 
 </body>
