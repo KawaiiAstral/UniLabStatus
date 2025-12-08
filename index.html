@@ -9,7 +9,7 @@
     
     <style>
         :root {
-            /* --- 洗練されたモノクロームパレット --- */
+            /* --- カラーパレット (High Contrast / Solid) --- */
             --bg-body: #ffffff;
             --bg-card: #ffffff;
             --border-color: #e5e5e5;
@@ -19,31 +19,35 @@
             --text-muted: #999999;
 
             /* ステータスカラー */
-            --color-operational: #00c853; /* Vivid Green */
+            --color-operational: #00c853; /* Green */
             --bg-operational-subtle: #f1fcf5;
-            --color-outage: #ff3d00;      /* Vivid Red-Orange */
+            
+            --color-warning: #ffab00;     /* Amber (Slow/Degraded) */
+            --bg-warning-subtle: #fff8e1;
+
+            --color-outage: #ff3d00;      /* Red (Down) */
             --bg-outage-subtle: #fff5f2;
             
             /* バーの色 */
             --bar-bg-empty: #f0f0f0;
             
-            /* デザインルール */
-            --radius-card: 0px;
+            --radius-card: 0px; /* 角丸なしのソリッドデザイン */
         }
 
         /* ダークモード対応 */
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-body: #000000;
-                --bg-card: #000000;
+                --bg-body: #050505;
+                --bg-card: #0a0a0a;
                 --border-color: #333333;
                 
                 --text-primary: #ffffff;
                 --text-secondary: #aaaaaa;
                 --text-muted: #666666;
                 
-                --bar-bg-empty: #222222;
+                --bar-bg-empty: #1a1a1a;
                 --bg-operational-subtle: rgba(0, 200, 83, 0.1);
+                --bg-warning-subtle: rgba(255, 171, 0, 0.1);
                 --bg-outage-subtle: rgba(255, 61, 0, 0.1);
             }
         }
@@ -53,27 +57,28 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             margin: 0; padding: 0; 
-            line-height: 1.7;
-            letter-spacing: 0.02em;
+            line-height: 1.6;
+            letter-spacing: 0.01em;
         }
 
-        h1, h2, h3, .logo, .service-name, .status-badge, .stat-value {
+        /* 数字や見出しは構築的なフォントで */
+        h1, h2, h3, .logo, .service-name, .status-badge, .stat-value, .uptime-percent, .incident-date {
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        .container { max-width: 800px; margin: 0 auto; padding: 80px 24px; }
+        .container { max-width: 820px; margin: 0 auto; padding: 60px 24px; }
 
         /* ヘッダー */
         header { 
             display: flex; justify-content: space-between; align-items: flex-end; 
-            margin-bottom: 60px; padding-bottom: 20px;
+            margin-bottom: 50px; padding-bottom: 20px;
             border-bottom: 2px solid var(--text-primary);
         }
         .logo { 
-            font-size: 1.5rem; font-weight: 700; 
+            font-size: 1.4rem; font-weight: 700; 
             display: flex; align-items: center; gap: 12px; 
             color: var(--text-primary);
-            text-transform: uppercase; letter-spacing: 0.1em;
+            text-transform: uppercase; letter-spacing: 0.05em;
         }
         .header-links a {
             color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500;
@@ -84,115 +89,158 @@
         /* 全体ステータス (Hero) */
         .status-hero {
             background: var(--bg-card);
-            padding: 32px;
+            padding: 24px 32px;
             display: flex; align-items: center; gap: 24px;
-            margin-bottom: 50px; 
+            margin-bottom: 40px; 
             border: 1px solid var(--border-color);
         }
-        .status-hero.operational { border-left: 8px solid var(--color-operational); background: var(--bg-operational-subtle); }
-        .status-hero.outage { border-left: 8px solid var(--color-outage); background: var(--bg-outage-subtle); }
+        .status-hero.operational { border-left: 6px solid var(--color-operational); background: var(--bg-operational-subtle); }
+        .status-hero.outage { border-left: 6px solid var(--color-outage); background: var(--bg-outage-subtle); }
+        .status-hero.warning { border-left: 6px solid var(--color-warning); background: var(--bg-warning-subtle); }
 
-        .status-icon-wrapper { font-size: 2rem; flex-shrink: 0; }
+        .status-icon-wrapper { font-size: 1.8rem; flex-shrink: 0; }
         .status-hero.operational .status-icon-wrapper { color: var(--color-operational); }
         .status-hero.outage .status-icon-wrapper { color: var(--color-outage); }
+        .status-hero.warning .status-icon-wrapper { color: var(--color-warning); }
 
-        .status-hero-text h1 { margin: 0; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .status-hero-text p { margin: 8px 0 0 0; color: var(--text-secondary); font-size: 1rem; }
+        .status-hero-text h1 { margin: 0; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; }
+        .status-hero-text p { margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.95rem; }
 
         /* サービスカード */
         .service-card {
             background: var(--bg-card);
-            padding: 24px 0;
+            padding: 28px 0;
             margin-bottom: 0;
             border-bottom: 1px solid var(--border-color);
         }
         .service-card:last-child { border-bottom: none; }
 
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .card-header { 
+            display: flex; justify-content: space-between; align-items: flex-start; 
+            margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+        }
         
+        .service-info { flex: 1; min-width: 200px; }
         .service-name { 
             font-weight: 700; font-size: 1.1rem; 
-            display: flex; align-items: center; gap: 12px; 
+            display: flex; align-items: center; gap: 10px; 
+            margin-bottom: 6px;
         }
-        .service-link { 
-            color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s;
+        /* 長い名前対応 */
+        .service-name span {
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
+        .uptime-percent {
+            font-size: 0.8rem; color: var(--text-secondary); font-weight: 600;
+            display: inline-block; background: var(--bar-bg-empty); padding: 2px 8px;
+        }
+
+        .service-link { color: var(--text-muted); font-size: 0.8rem; transition: color 0.2s; }
         .service-link:hover { color: var(--text-primary); }
 
-        /* バッジとレイテンシ表示 */
-        .status-meta { display: flex; align-items: center; gap: 16px; }
+        /* ステータス情報エリア（右側） */
+        .status-meta { display: flex; align-items: center; gap: 20px; }
         
+        /* レイテンシ表示 */
         .latency-badge {
-            font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
-            display: flex; align-items: center; gap: 6px;
+            font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Space Grotesk', sans-serif;
         }
-        .latency-dot { width: 6px; height: 6px; background: var(--color-operational); border-radius: 50%; }
+        .latency-badge.warning { color: var(--color-warning); font-weight: 700; }
+        .latency-dot { width: 8px; height: 8px; background: var(--color-operational); border-radius: 0; } /* 四角いドット */
+        .latency-badge.warning .latency-dot { background: var(--color-warning); }
 
+        /* ステータスバッジ */
         .status-badge {
-            font-size: 0.7rem; font-weight: 700; padding: 6px 12px;
+            font-size: 0.75rem; font-weight: 700; padding: 6px 12px;
             display: inline-flex; align-items: center; gap: 8px;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            border-radius: 0px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            background: var(--text-primary); color: var(--bg-body); /* デフォルト黒背景 */
+            min-width: 110px; justify-content: center;
         }
         .status-badge.operational { background-color: var(--color-operational); color: white; }
         .status-badge.down { background-color: var(--color-outage); color: white; }
+        .status-badge.degraded { background-color: var(--color-warning); color: black; }
 
         .pulse-dot {
-            width: 6px; height: 6px; background-color: white; border-radius: 0; 
-            animation: pulse-sharp 1.5s infinite;
+            width: 6px; height: 6px; background-color: currentColor; border-radius: 50%; 
+            animation: pulse 2s infinite; opacity: 0.8;
         }
-        @keyframes pulse-sharp { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 
         /* Uptime Bars */
         .uptime-bars {
-            display: flex; gap: 2px; height: 32px; align-items: flex-end; margin-top: 24px;
+            display: flex; gap: 3px; height: 36px; align-items: flex-end; margin-top: 20px;
         }
         .bar {
             flex: 1; background-color: var(--bar-bg-empty);
             height: 100%; position: relative; cursor: pointer;
-            border-radius: 0px; transition: background-color 0.1s;
+            transition: opacity 0.2s;
         }
         .bar.operational { background-color: var(--color-operational); }
         .bar.down { background-color: var(--color-outage); }
+        .bar.warning { background-color: var(--color-warning); } /* レイテンシ遅延時など */
         
-        .bar:hover { filter: brightness(0.9); }
+        .bar:hover { opacity: 0.7; }
         
-        /* ツールチップ (キリッとしたデザイン) */
+        /* ツールチップ */
         .bar::after {
             content: attr(data-tooltip);
-            position: absolute; bottom: 140%; right: 0;
+            position: absolute; bottom: 130%; right: 0;
             background: var(--text-primary); color: var(--bg-body); 
-            padding: 8px 12px; font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
-            border-radius: 0px; pointer-events: none; opacity: 0; transition: opacity 0.1s;
+            padding: 8px 12px; font-family: 'Inter', sans-serif;
+            font-size: 0.75rem; font-weight: 500; line-height: 1.4;
+            pointer-events: none; opacity: 0; transition: opacity 0.1s;
             z-index: 20; white-space: pre; text-align: right;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
         }
         .bar:hover::after { opacity: 1; }
 
         .uptime-legend { 
             display: flex; justify-content: space-between; 
-            font-size: 0.7rem; color: var(--text-muted); margin-top: 12px; font-weight: 500;
-            text-transform: uppercase; letter-spacing: 0.05em;
+            font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; font-weight: 500;
+            text-transform: uppercase;
         }
 
-        /* 過去ログ */
+        /* 過去ログ（インシデント履歴） */
         .history-section { margin-top: 80px; }
         .history-title { 
-            font-size: 1.1rem; font-weight: 700; margin-bottom: 32px; 
-            text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; 
+            text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--border-color); padding-bottom: 12px;
         }
+        
+        /* 日付ごとのグループ */
+        .incident-group { margin-bottom: 30px; }
+        .incident-date-header {
+            font-size: 0.9rem; font-weight: 700; color: var(--text-secondary);
+            margin-bottom: 12px; text-transform: uppercase;
+        }
+
         .incident-item {
-            padding: 16px 0; border-bottom: 1px dotted var(--border-color);
-            display: flex; justify-content: space-between; align-items: flex-start;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            padding: 16px; margin-bottom: 12px; 
+            display: flex; flex-direction: column; gap: 8px;
+            border-left: 4px solid var(--color-outage);
         }
-        .incident-title { color: var(--color-outage); font-weight: 700; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;}
-        .incident-date { color: var(--text-muted); font-size: 0.8rem; font-family: 'Space Grotesk', sans-serif;}
+        .incident-item.resolved { border-left-color: var(--color-operational); }
+        
+        .incident-header { display: flex; justify-content: space-between; align-items: center; }
+        .incident-name { font-weight: 700; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .incident-status { 
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; 
+            padding: 2px 8px; background: var(--bg-outage-subtle); color: var(--color-outage);
+        }
+        .incident-item.resolved .incident-status {
+            background: var(--bg-operational-subtle); color: var(--color-operational);
+        }
+
+        .incident-meta { font-size: 0.85rem; color: var(--text-secondary); display: flex; gap: 16px; }
 
         footer { 
             margin-top: 100px; display: flex; justify-content: space-between; align-items: center;
-            color: var(--text-muted); font-size: 0.8rem; padding: 30px 0; 
-            border-top: 2px solid var(--text-primary); text-transform: uppercase; font-weight: 500;
+            color: var(--text-muted); font-size: 0.8rem; padding: 40px 0; 
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
@@ -201,17 +249,17 @@
 <div class="container">
     <header>
         <div class="logo">
-            <i class="fas fa-square-full" style="color: var(--color-operational); font-size: 0.8em;"></i> 
+            <i class="fas fa-server" style="color: var(--color-operational); font-size: 0.9em;"></i> 
             UniLab Status
         </div>
         <nav class="header-links">
-            <a href="https://unilabstore.com">Main Site</a>
+            <a href="https://unilabstore.com" target="_blank">Home <i class="fas fa-external-link-alt" style="font-size:0.8em; margin-left:4px;"></i></a>
         </nav>
     </header>
 
     <div id="hero-status" class="status-hero">
         <div class="status-icon-wrapper"><i class="fas fa-circle-notch fa-spin" style="color:var(--text-muted);"></i></div>
-        <div class="status-hero-text"><h1>Loading System Status...</h1></div>
+        <div class="status-hero-text"><h1>Checking Systems...</h1></div>
     </div>
 
     <div id="service-list"></div>
@@ -229,30 +277,31 @@
 
 <script>
     const CONFIG = {
-        barCount: 60, // 表示するバーの本数（チェック回数）
-        jsonPath: './status.json' // 読み込むJSONファイルのパス
+        barCount: 60,       // チェック回数
+        latencyThreshold: 1000, // [ms] これを超えると黄色警告
+        jsonPath: './status.json'
     };
 
     async function fetchStatus() {
         try {
-            // キャッシュを防ぐためにタイムスタンプを付与
             const response = await fetch(`${CONFIG.jsonPath}?t=${Date.now()}`);
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) throw new Error('Data not found');
             const data = await response.json();
             render(data);
         } catch (error) {
-            console.error('Fetch error:', error);
+            console.error(error);
             renderErrorState();
         }
     }
 
     function renderErrorState() {
-        document.getElementById('hero-status').className = 'status-hero outage';
-        document.getElementById('hero-status').innerHTML = `
-            <div class="status-icon-wrapper"><i class="fas fa-times"></i></div>
+        const hero = document.getElementById('hero-status');
+        hero.className = 'status-hero outage';
+        hero.innerHTML = `
+            <div class="status-icon-wrapper"><i class="fas fa-exclamation-circle"></i></div>
             <div class="status-hero-text">
-                <h1>Status Data Unavailable</h1>
-                <p>Unable to load 'status.json'. Ensure the file exists in the same directory.</p>
+                <h1>Status Unknown</h1>
+                <p>Could not load system data. Please try again later.</p>
             </div>
         `;
     }
@@ -262,85 +311,101 @@
         const hero = document.getElementById('hero-status');
         const historyContainer = document.getElementById('history-container');
         
-        // 最終更新日時
         if (data.lastUpdated) {
-            document.getElementById('last-updated').textContent = `Last updated: ${data.lastUpdated}`;
+            document.getElementById('last-updated').textContent = `Last Check: ${data.lastUpdated}`;
         }
 
         listContainer.innerHTML = '';
         historyContainer.innerHTML = '';
 
-        let allOperational = true;
-        let recentIncidents = [];
+        let overallStatus = 'operational'; // operational, warning, outage
+        let incidentEvents = [];
 
-        // サービスごとのループ
+        // サービスループ
         data.services.forEach(service => {
-            const isUp = service.currentStatus === 'operational';
-            if (!isUp) allOperational = false;
-
-            // 履歴データの処理 (JSONは新しい順なので、最新60件を取得して逆順(古い順)にする)
             const rawHistory = service.history || [];
-            // 最新60件を取得
+            // 最新の60件を取得（JSONは新しい順なので、スライスしてから逆順にする＝左が古い、右が新しい）
             const historySlice = rawHistory.slice(0, CONFIG.barCount);
-            // 左(過去) -> 右(現在) にするためにreverse
             const historyToShow = [...historySlice].reverse();
 
-            // インシデント（ダウン）情報の収集
-            rawHistory.forEach(log => {
-                if (log.status !== 'operational') {
-                    recentIncidents.push({ 
-                        name: service.name, 
-                        time: log.time, 
-                        status: log.status 
-                    });
-                }
-            });
+            // 最新の状態
+            const currentLog = rawHistory[0] || {};
+            const isUp = service.currentStatus === 'operational';
+            const latency = service.lastLatency || currentLog.latency || 0;
+            const isSlow = latency > CONFIG.latencyThreshold;
 
-            // バーのHTML生成
+            // 全体ステータスの判定
+            if (!isUp) overallStatus = 'outage';
+            else if (isSlow && overallStatus !== 'outage') overallStatus = 'warning';
+
+            // 1. 稼働率 (Uptime) 計算
+            const totalChecks = historySlice.length;
+            const upChecks = historySlice.filter(h => h.status === 'operational').length;
+            const uptimePct = totalChecks > 0 ? ((upChecks / totalChecks) * 100).toFixed(1) : '0.0';
+
+            // 2. インシデント検出（連続したダウンを1つのイベントにまとめる）
+            // JSONは新しい順なので、古い方から見ていくと分かりやすいが、
+            // ここでは単純に「非稼働」のログを抽出して後でグループ化する方針をとる
+            detectIncidents(service, rawHistory, incidentEvents);
+
+            // 3. バーの描画
             let barsHtml = historyToShow.map(log => {
                 const date = new Date(log.time);
-                // ツールチップ表示用
-                const timeStr = date.toLocaleString('ja-JP', { 
-                    month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'
-                });
+                const timeStr = date.toLocaleString('ja-JP', { month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit' });
                 const isDown = log.status !== 'operational';
-                const statusStr = isDown ? 'DOWN' : 'OPERATIONAL';
-                const colorClass = isDown ? 'down' : 'operational';
-                const latency = log.latency ? `${log.latency}ms` : '--';
+                const logLatency = log.latency || 0;
+                const isLogSlow = logLatency > CONFIG.latencyThreshold;
                 
-                return `<div class="bar ${colorClass}" data-tooltip="${timeStr}\n${statusStr} | ${latency}"></div>`;
+                let colorClass = 'operational';
+                let statusLabel = 'Operational';
+                
+                if (isDown) {
+                    colorClass = 'down';
+                    statusLabel = 'Downtime Detected';
+                } else if (isLogSlow) {
+                    colorClass = 'warning';
+                    statusLabel = 'High Latency';
+                }
+
+                return `<div class="bar ${colorClass}" data-tooltip="${timeStr}\n${statusLabel} (${logLatency}ms)"></div>`;
             }).join('');
 
-            // データが足りない場合はグレーのバーで埋める
+            // 不足分をグレーで埋める
             const emptyCount = CONFIG.barCount - historyToShow.length;
-            for(let i=0; i<emptyCount; i++) {
-                barsHtml = `<div class="bar" data-tooltip="NO DATA"></div>` + barsHtml;
-            }
+            for(let i=0; i<emptyCount; i++) barsHtml = `<div class="bar" data-tooltip="NO DATA"></div>` + barsHtml;
 
-            // バッジとレイテンシ表示
+            // 4. バッジとメタ情報
             let badgeHtml = '';
             let latencyHtml = '';
 
-            if (isUp) {
-                badgeHtml = `<div class="status-badge operational"><div class="pulse-dot"></div> OPERATIONAL</div>`;
-                // 最新のレイテンシを表示 (JSONのlastLatency、または履歴の最新)
-                const currentLatency = service.lastLatency || (rawHistory[0] ? rawHistory[0].latency : 0);
-                latencyHtml = `
-                    <div class="latency-badge">
-                        <div class="latency-dot"></div>
-                        <span class="stat-value">${currentLatency}ms</span>
-                    </div>`;
+            // レイテンシ表示
+            if (!isUp) {
+                latencyHtml = `<div class="latency-badge warning"><i class="fas fa-plug"></i> Offline</div>`;
+            } else if (isSlow) {
+                latencyHtml = `<div class="latency-badge warning" title="Response time is high"><div class="latency-dot"></div> ${latency}ms <i class="fas fa-exclamation-triangle"></i></div>`;
             } else {
-                badgeHtml = `<div class="status-badge down"><i class="fas fa-exclamation-triangle"></i> OUTAGE</div>`;
-                latencyHtml = `<div class="latency-badge" style="color:var(--color-outage);"><i class="fas fa-times-circle"></i> Connection Lost</div>`;
+                latencyHtml = `<div class="latency-badge"><div class="latency-dot"></div> ${latency}ms</div>`;
+            }
+
+            // ステータスバッジ
+            if (isUp) {
+                if (isSlow) {
+                    badgeHtml = `<div class="status-badge degraded"><i class="fas fa-exclamation"></i> DEGRADED</div>`;
+                } else {
+                    badgeHtml = `<div class="status-badge operational"><i class="fas fa-check"></i> OPERATIONAL</div>`;
+                }
+            } else {
+                badgeHtml = `<div class="status-badge down"><div class="pulse-dot"></div> OUTAGE</div>`;
             }
 
             const cardHtml = `
                 <div class="service-card">
-                    <div class="card-top">
-                        <div class="service-name">
-                            ${service.name}
-                            <a href="${service.url}" target="_blank" class="service-link"><i class="fas fa-arrow-up-right-from-square"></i></a>
+                    <div class="card-header">
+                        <div class="service-info">
+                            <div class="service-name">
+                                <span>${service.name}</span>
+                            </div>
+                            <div class="uptime-percent">${uptimePct}% Uptime (Past 60 checks)</div>
                         </div>
                         <div class="status-meta">
                             ${latencyHtml}
@@ -348,67 +413,149 @@
                         </div>
                     </div>
                     <div class="uptime-bars">${barsHtml}</div>
-                    <div class="uptime-legend">
-                        <span>Past Checks</span>
-                        <span>Current</span>
-                    </div>
                 </div>
             `;
             listContainer.innerHTML += cardHtml;
         });
 
         // ヒーローセクション更新
-        if (allOperational) {
-            hero.className = 'status-hero operational';
-            hero.innerHTML = `
-                <div class="status-icon-wrapper"><i class="fas fa-check-square"></i></div>
-                <div class="status-hero-text">
-                    <h1>All Systems Operational</h1>
-                    <p>All services are running normally with low latency.</p>
-                </div>
-            `;
-        } else {
-            hero.className = 'status-hero outage';
-            hero.innerHTML = `
-                <div class="status-icon-wrapper"><i class="fas fa-exclamation-triangle"></i></div>
-                <div class="status-hero-text">
-                    <h1>Service Disruption Reported</h1>
-                    <p>Some services are experiencing issues.</p>
-                </div>
-            `;
-        }
+        updateHero(hero, overallStatus);
 
-        renderIncidents(recentIncidents, historyContainer);
+        // インシデント履歴の描画
+        renderIncidentsV2(incidentEvents, historyContainer);
     }
 
-    function renderIncidents(incidents, container) {
+    function updateHero(element, status) {
+        if (status === 'operational') {
+            element.className = 'status-hero operational';
+            element.innerHTML = `
+                <div class="status-icon-wrapper"><i class="fas fa-check-circle"></i></div>
+                <div class="status-hero-text">
+                    <h1>All Systems Operational</h1>
+                    <p>All services are running normally.</p>
+                </div>`;
+        } else if (status === 'warning') {
+            element.className = 'status-hero warning';
+            element.innerHTML = `
+                <div class="status-icon-wrapper"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="status-hero-text">
+                    <h1>Performance Degraded</h1>
+                    <p>Some services are experiencing high latency.</p>
+                </div>`;
+        } else {
+            element.className = 'status-hero outage';
+            element.innerHTML = `
+                <div class="status-icon-wrapper"><i class="fas fa-times-circle"></i></div>
+                <div class="status-hero-text">
+                    <h1>Service Disruption</h1>
+                    <p>We are investigating issues with some services.</p>
+                </div>`;
+        }
+    }
+
+    // インシデント検出ロジック（連続するダウンを1つにまとめる）
+    function detectIncidents(service, history, eventsArray) {
+        // historyは新しい順 [Now, ..., Past]
+        // 処理しやすいように古い順に並び替え [Past, ..., Now]
+        const sorted = [...history].reverse();
+        
+        let currentIncident = null;
+
+        sorted.forEach((log, index) => {
+            const isDown = log.status !== 'operational';
+            
+            if (isDown) {
+                if (!currentIncident) {
+                    // インシデント開始
+                    currentIncident = {
+                        serviceName: service.name,
+                        startTime: log.time,
+                        endTime: null,
+                        resolved: false
+                    };
+                }
+                // インシデント継続中... 特に何もしない（終了時間を更新し続ける手もあるが、抜けた時に入れる）
+            } else {
+                if (currentIncident) {
+                    // インシデント終了（解決）
+                    currentIncident.endTime = log.time; // 復旧した時刻
+                    currentIncident.resolved = true;
+                    eventsArray.push(currentIncident);
+                    currentIncident = null;
+                }
+            }
+        });
+
+        // ループが終わってもインシデントが残っている＝現在進行中
+        if (currentIncident) {
+            currentIncident.resolved = false; // まだ解決していない
+            eventsArray.push(currentIncident);
+        }
+    }
+
+    // インシデント履歴の描画（日付グループ化 & 解決済み表示）
+    function renderIncidentsV2(incidents, container) {
         if (incidents.length === 0) {
-            container.innerHTML = `<div class="incident-item" style="border:none; color:var(--text-muted);">No incidents reported in recent history.</div>`;
+            container.innerHTML = `<div style="color:var(--text-muted);">No incidents reported in the recorded history.</div>`;
             return;
         }
 
-        // 新しい順にソートして、最新5件だけ表示
-        incidents.sort((a, b) => new Date(b.time) - new Date(a.time));
-        const limitedIncidents = incidents.slice(0, 5);
+        // 新しい順にソート
+        incidents.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
 
-        limitedIncidents.forEach(inc => {
-            const dateStr = new Date(inc.time).toLocaleString('ja-JP', { 
-                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'
-            });
-            
-            container.innerHTML += `
-                <div class="incident-item">
-                    <div class="incident-title">
-                        <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i>
-                        Downtime Detected - ${inc.name}
+        // 日付ごとにグループ化
+        const grouped = {};
+        incidents.forEach(inc => {
+            const dateKey = new Date(inc.startTime).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push(inc);
+        });
+
+        // 描画
+        Object.keys(grouped).forEach(dateKey => {
+            let itemsHtml = grouped[dateKey].map(inc => {
+                const start = new Date(inc.startTime);
+                const timeStr = start.toLocaleTimeString('ja-JP', { hour: '2-digit', minute:'2-digit' });
+                
+                let statusHtml = '';
+                let durationStr = '';
+
+                if (inc.resolved) {
+                    statusHtml = `<span class="incident-status" style="background:var(--bg-operational-subtle); color:var(--color-operational);"><i class="fas fa-check"></i> Resolved</span>`;
+                    
+                    // 継続時間の計算
+                    const end = new Date(inc.endTime);
+                    const diffMs = end - start;
+                    const diffMins = Math.floor(diffMs / 60000);
+                    durationStr = `Duration: ${diffMins} min`;
+                } else {
+                    statusHtml = `<span class="incident-status"><i class="fas fa-exclamation-circle"></i> Ongoing</span>`;
+                    durationStr = `Investigating...`;
+                }
+
+                return `
+                    <div class="incident-item ${inc.resolved ? 'resolved' : ''}">
+                        <div class="incident-header">
+                            <div class="incident-name">${inc.serviceName}</div>
+                            ${statusHtml}
+                        </div>
+                        <div class="incident-meta">
+                            <span><i class="far fa-clock"></i> Started at ${timeStr}</span>
+                            <span>${durationStr}</span>
+                        </div>
                     </div>
-                    <div class="incident-date">${dateStr}</div>
+                `;
+            }).join('');
+
+            container.innerHTML += `
+                <div class="incident-group">
+                    <div class="incident-date-header">${dateKey}</div>
+                    ${itemsHtml}
                 </div>
             `;
         });
     }
 
-    // 実行
     fetchStatus();
 </script>
 
