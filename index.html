@@ -10,30 +10,28 @@
     <style>
         :root {
             /* --- 洗練されたモノクロームパレット --- */
-            --bg-body: #ffffff;       /* 純白の背景 */
-            --bg-card: #ffffff;       /* カードも白で統一 */
-            --border-color: #e5e5e5;  /* 非常に薄くシャープな境界線 */
+            --bg-body: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e5e5e5;
             
-            --text-primary: #111111;  /* ほぼ黒に近いグレー */
+            --text-primary: #111111;
             --text-secondary: #666666;
             --text-muted: #999999;
 
-            /* ステータスカラー（彩度を上げ、パキッとした色味に） */
+            /* ステータスカラー */
             --color-operational: #00c853; /* Vivid Green */
             --bg-operational-subtle: #f1fcf5;
             --color-outage: #ff3d00;      /* Vivid Red-Orange */
             --bg-outage-subtle: #fff5f2;
             
-            /* バーの色（ソリッドなグレー） */
+            /* バーの色 */
             --bar-bg-empty: #f0f0f0;
             
-            /* --- デザインルール: 丸みなし、影なし --- */
+            /* デザインルール */
             --radius-card: 0px;
-            --radius-bar: 0px;
-            --shadow-card: none;
         }
 
-        /* ダークモード対応（キリッとした黒背景） */
+        /* ダークモード対応 */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-body: #000000;
@@ -55,12 +53,11 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             margin: 0; padding: 0; 
-            line-height: 1.7; /* 行間を少し広げて優雅に */
-            letter-spacing: 0.02em; /* 文字間を少し広げて洗練させる */
+            line-height: 1.7;
+            letter-spacing: 0.02em;
         }
 
-        /* タイトル用フォント */
-        h1, h2, h3, .logo, .service-name, .status-badge {
+        h1, h2, h3, .logo, .service-name, .status-badge, .stat-value {
             font-family: 'Space Grotesk', sans-serif;
         }
 
@@ -70,14 +67,13 @@
         header { 
             display: flex; justify-content: space-between; align-items: flex-end; 
             margin-bottom: 60px; padding-bottom: 20px;
-            border-bottom: 2px solid var(--text-primary); /* ヘッダー下に太い線 */
+            border-bottom: 2px solid var(--text-primary);
         }
         .logo { 
             font-size: 1.5rem; font-weight: 700; 
             display: flex; align-items: center; gap: 12px; 
             color: var(--text-primary);
-            text-transform: uppercase; /* 大文字で構築的に */
-            letter-spacing: 0.1em;
+            text-transform: uppercase; letter-spacing: 0.1em;
         }
         .header-links a {
             color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500;
@@ -85,36 +81,32 @@
         }
         .header-links a:hover { color: var(--text-primary); }
 
-        /* 全体ステータス (Hero) - フラットでソリッドに */
+        /* 全体ステータス (Hero) */
         .status-hero {
             background: var(--bg-card);
             padding: 32px;
             display: flex; align-items: center; gap: 24px;
             margin-bottom: 50px; 
-            border: 1px solid var(--border-color); /* 影ではなく線で囲む */
+            border: 1px solid var(--border-color);
         }
-        
-        /* 状態に応じたアクセント（左側の太い線のみ） */
         .status-hero.operational { border-left: 8px solid var(--color-operational); background: var(--bg-operational-subtle); }
         .status-hero.outage { border-left: 8px solid var(--color-outage); background: var(--bg-outage-subtle); }
 
-        .status-icon-wrapper {
-            font-size: 2rem; flex-shrink: 0;
-        }
+        .status-icon-wrapper { font-size: 2rem; flex-shrink: 0; }
         .status-hero.operational .status-icon-wrapper { color: var(--color-operational); }
         .status-hero.outage .status-icon-wrapper { color: var(--color-outage); }
 
         .status-hero-text h1 { margin: 0; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         .status-hero-text p { margin: 8px 0 0 0; color: var(--text-secondary); font-size: 1rem; }
 
-        /* サービスカード - ミニマルなリスト形式 */
+        /* サービスカード */
         .service-card {
             background: var(--bg-card);
-            padding: 24px 0; /* 上下のパディングのみ */
+            padding: 24px 0;
             margin-bottom: 0;
-            border-bottom: 1px solid var(--border-color); /* 下線で区切る */
+            border-bottom: 1px solid var(--border-color);
         }
-        .service-card:last-child { border-bottom: none; } /* 最後の線は消す */
+        .service-card:last-child { border-bottom: none; }
 
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         
@@ -123,64 +115,58 @@
             display: flex; align-items: center; gap: 12px; 
         }
         .service-link { 
-            color: var(--text-muted); font-size: 0.9rem; 
-            transition: color 0.2s;
+            color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s;
         }
         .service-link:hover { color: var(--text-primary); }
 
-        /* ステータスバッジ - 角張った長方形 */
+        /* バッジとレイテンシ表示 */
+        .status-meta { display: flex; align-items: center; gap: 16px; }
+        
+        .latency-badge {
+            font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .latency-dot { width: 6px; height: 6px; background: var(--color-operational); border-radius: 50%; }
+
         .status-badge {
             font-size: 0.7rem; font-weight: 700; padding: 6px 12px;
             display: inline-flex; align-items: center; gap: 8px;
             text-transform: uppercase; letter-spacing: 0.1em;
-            border-radius: 0px; /* 角丸なし */
+            border-radius: 0px;
         }
-        .status-badge.operational { 
-            background-color: var(--color-operational); color: white; 
-        }
-        .status-badge.outage { 
-            background-color: var(--color-outage); color: white; 
-        }
+        .status-badge.operational { background-color: var(--color-operational); color: white; }
+        .status-badge.down { background-color: var(--color-outage); color: white; }
 
-        /* パルスアニメーション（よりシャープに） */
         .pulse-dot {
-            width: 6px; height: 6px; background-color: white;
-            /* 円ではなく四角いドットにする */
-            border-radius: 0; 
+            width: 6px; height: 6px; background-color: white; border-radius: 0; 
             animation: pulse-sharp 1.5s infinite;
         }
-        @keyframes pulse-sharp {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulse-sharp { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* --- Uptime Bars (キリッと) --- */
+        /* Uptime Bars */
         .uptime-bars {
-            display: flex; gap: 2px; /* 間隔を狭くして密な感じに */
-            height: 32px; align-items: flex-end; margin-top: 24px;
+            display: flex; gap: 2px; height: 32px; align-items: flex-end; margin-top: 24px;
         }
         .bar {
             flex: 1; background-color: var(--bar-bg-empty);
             height: 100%; position: relative; cursor: pointer;
-            border-radius: 0px; /* 角丸なし */
-            transition: background-color 0.1s; /* 動きを最小限に */
+            border-radius: 0px; transition: background-color 0.1s;
         }
         .bar.operational { background-color: var(--color-operational); }
-        .bar.outage { background-color: var(--color-outage); }
+        .bar.down { background-color: var(--color-outage); }
         
-        /* ホバー時は色を少し濃くするだけ（拡大しない） */
         .bar:hover { filter: brightness(0.9); }
         
-        /* ツールチップ - こちらも角張らせる */
+        /* ツールチップ (キリッとしたデザイン) */
         .bar::after {
             content: attr(data-tooltip);
-            position: absolute; bottom: 140%; right: 0; /* 右寄せで表示 */
+            position: absolute; bottom: 140%; right: 0;
             background: var(--text-primary); color: var(--bg-body); 
             padding: 8px 12px; font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
             border-radius: 0px; pointer-events: none; opacity: 0; transition: opacity 0.1s;
-            z-index: 20; box-shadow: none; border: 1px solid var(--border-color);
+            z-index: 20; white-space: pre; text-align: right;
+            border: 1px solid var(--border-color);
         }
         .bar:hover::after { opacity: 1; }
 
@@ -196,34 +182,18 @@
             font-size: 1.1rem; font-weight: 700; margin-bottom: 32px; 
             text-transform: uppercase; letter-spacing: 0.1em;
         }
-        
-        .month-block { margin-bottom: 40px; }
-        .month-name { 
-            font-size: 0.9rem; font-weight: 700; margin-bottom: 16px; 
-            color: var(--text-primary); text-transform: uppercase;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 8px;
-        }
-        
         .incident-item {
-            padding: 16px 0; /* 上下のみ */
-            border-bottom: 1px dotted var(--border-color); /* ドット線で区切る */
+            padding: 16px 0; border-bottom: 1px dotted var(--border-color);
             display: flex; justify-content: space-between; align-items: flex-start;
         }
-        .incident-info { display: flex; flex-direction: column; gap: 4px; }
-        .incident-title { color: var(--color-outage); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif;}
+        .incident-title { color: var(--color-outage); font-weight: 700; font-size: 0.9rem; font-family: 'Space Grotesk', sans-serif;}
         .incident-date { color: var(--text-muted); font-size: 0.8rem; font-family: 'Space Grotesk', sans-serif;}
-        .no-incidents { color: var(--text-muted); font-size: 0.9rem; padding: 16px 0; }
 
         footer { 
-            margin-top: 100px; 
-            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 100px; display: flex; justify-content: space-between; align-items: center;
             color: var(--text-muted); font-size: 0.8rem; padding: 30px 0; 
-            border-top: 2px solid var(--text-primary); /* フッター上にも太い線 */
-            text-transform: uppercase; font-weight: 500;
+            border-top: 2px solid var(--text-primary); text-transform: uppercase; font-weight: 500;
         }
-
-        /* フェードインを削除し、静的な表示にする */
-
     </style>
 </head>
 <body>
@@ -235,129 +205,135 @@
             UniLab Status
         </div>
         <nav class="header-links">
-            <a href="#">Homepage</a>
-            <a href="#">Support</a>
+            <a href="https://unilabstore.com">Main Site</a>
         </nav>
     </header>
 
     <div id="hero-status" class="status-hero">
         <div class="status-icon-wrapper"><i class="fas fa-circle-notch fa-spin" style="color:var(--text-muted);"></i></div>
-        <div class="status-hero-text"><h1>Checking System Status...</h1></div>
+        <div class="status-hero-text"><h1>Loading System Status...</h1></div>
     </div>
 
     <div id="service-list"></div>
 
     <div class="history-section">
-        <div class="history-title">Incident History</div>
+        <div class="history-title">Recent Incidents</div>
         <div id="history-container"></div>
     </div>
 
     <footer>
-        <p>&copy; 2023 UniLab Systems</p>
+        <p>&copy; 2025 UniLab Systems</p>
         <p id="last-updated">Updating...</p>
     </footer>
 </div>
 
 <script>
-    // --- 擬似データ（APIがない場合のテスト用） ---
-    const MOCK_DATA = {
-        lastUpdated: new Date().toLocaleString('en-US', { hour12: false }),
-        services: [
-            {
-                name: "UniAccount API",
-                url: "https://example.com",
-                currentStatus: "operational",
-                history: Array.from({length: 60}, (_, i) => ({
-                    time: new Date(Date.now() - i * 86400000).toISOString(),
-                    status: Math.random() > 0.99 ? "outage" : "operational"
-                }))
-            },
-            {
-                name: "VRCGF Web Frontend",
-                url: "https://example.com",
-                currentStatus: "operational",
-                history: Array.from({length: 60}, (_, i) => ({
-                    time: new Date(Date.now() - i * 86400000).toISOString(),
-                    status: "operational"
-                }))
-            },
-            {
-                name: "Database Cluster",
-                url: "#",
-                currentStatus: "operational",
-                history: Array.from({length: 60}, (_, i) => ({
-                    time: new Date(Date.now() - i * 86400000).toISOString(),
-                    status: "operational"
-                }))
-            }
-        ]
+    const CONFIG = {
+        barCount: 60, // 表示するバーの本数（チェック回数）
+        jsonPath: './status.json' // 読み込むJSONファイルのパス
     };
 
     async function fetchStatus() {
         try {
-            // 本番環境用: const response = await fetch('./status.json'); const data = await response.json();
-            const data = MOCK_DATA; // テスト用
-            setTimeout(() => render(data), 300);
+            // キャッシュを防ぐためにタイムスタンプを付与
+            const response = await fetch(`${CONFIG.jsonPath}?t=${Date.now()}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            render(data);
         } catch (error) {
-            console.error(error);
-            document.getElementById('hero-status').className = 'status-hero outage';
-            document.getElementById('hero-status').innerHTML = `
-                <div class="status-icon-wrapper"><i class="fas fa-times"></i></div>
-                <div class="status-hero-text"><h1>Status Unavailable</h1><p>Failed to load system data.</p></div>
-            `;
+            console.error('Fetch error:', error);
+            renderErrorState();
         }
+    }
+
+    function renderErrorState() {
+        document.getElementById('hero-status').className = 'status-hero outage';
+        document.getElementById('hero-status').innerHTML = `
+            <div class="status-icon-wrapper"><i class="fas fa-times"></i></div>
+            <div class="status-hero-text">
+                <h1>Status Data Unavailable</h1>
+                <p>Unable to load 'status.json'. Ensure the file exists in the same directory.</p>
+            </div>
+        `;
     }
 
     function render(data) {
         const listContainer = document.getElementById('service-list');
         const hero = document.getElementById('hero-status');
         const historyContainer = document.getElementById('history-container');
-        document.getElementById('last-updated').textContent = `Last updated: ${data.lastUpdated}`;
+        
+        // 最終更新日時
+        if (data.lastUpdated) {
+            document.getElementById('last-updated').textContent = `Last updated: ${data.lastUpdated}`;
+        }
 
         listContainer.innerHTML = '';
         historyContainer.innerHTML = '';
 
-        if (!data.services || !Array.isArray(data.services)) {
-            listContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted);">No data available.</p>';
-            return;
-        }
-
         let allOperational = true;
-        let incidentHistory = [];
+        let recentIncidents = [];
 
+        // サービスごとのループ
         data.services.forEach(service => {
             const isUp = service.currentStatus === 'operational';
             if (!isUp) allOperational = false;
 
-            const history = service.history || [];
-            const BAR_COUNT = 60;
-            const historyToShow = history.slice(0, BAR_COUNT).reverse(); 
+            // 履歴データの処理 (JSONは新しい順なので、最新60件を取得して逆順(古い順)にする)
+            const rawHistory = service.history || [];
+            // 最新60件を取得
+            const historySlice = rawHistory.slice(0, CONFIG.barCount);
+            // 左(過去) -> 右(現在) にするためにreverse
+            const historyToShow = [...historySlice].reverse();
 
-            history.forEach(log => {
+            // インシデント（ダウン）情報の収集
+            rawHistory.forEach(log => {
                 if (log.status !== 'operational') {
-                    incidentHistory.push({ name: service.name, time: log.time, status: log.status });
+                    recentIncidents.push({ 
+                        name: service.name, 
+                        time: log.time, 
+                        status: log.status 
+                    });
                 }
             });
 
+            // バーのHTML生成
             let barsHtml = historyToShow.map(log => {
                 const date = new Date(log.time);
-                // ツールチップの日付フォーマットを短くソリッドに
-                const timeStr = date.toLocaleString('en-US', { month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit', hour12: false});
+                // ツールチップ表示用
+                const timeStr = date.toLocaleString('ja-JP', { 
+                    month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'
+                });
                 const isDown = log.status !== 'operational';
-                const statusStr = isDown ? 'DOWNTIME' : 'OPERATIONAL';
-                const colorClass = isDown ? 'outage' : 'operational';
-                return `<div class="bar ${colorClass}" data-tooltip="${timeStr} [${statusStr}]"></div>`;
+                const statusStr = isDown ? 'DOWN' : 'OPERATIONAL';
+                const colorClass = isDown ? 'down' : 'operational';
+                const latency = log.latency ? `${log.latency}ms` : '--';
+                
+                return `<div class="bar ${colorClass}" data-tooltip="${timeStr}\n${statusStr} | ${latency}"></div>`;
             }).join('');
 
-            const emptyCount = BAR_COUNT - historyToShow.length;
+            // データが足りない場合はグレーのバーで埋める
+            const emptyCount = CONFIG.barCount - historyToShow.length;
             for(let i=0; i<emptyCount; i++) {
                 barsHtml = `<div class="bar" data-tooltip="NO DATA"></div>` + barsHtml;
             }
 
-            // バッジ: テキストをすべて大文字に、アイコンもシャープに
-            const badgeHtml = isUp 
-                ? `<div class="status-badge operational"><div class="pulse-dot"></div> SYSTEM OPERATIONAL</div>`
-                : `<div class="status-badge outage"><i class="fas fa-exclamation-triangle"></i> SYSTEM OUTAGE</div>`;
+            // バッジとレイテンシ表示
+            let badgeHtml = '';
+            let latencyHtml = '';
+
+            if (isUp) {
+                badgeHtml = `<div class="status-badge operational"><div class="pulse-dot"></div> OPERATIONAL</div>`;
+                // 最新のレイテンシを表示 (JSONのlastLatency、または履歴の最新)
+                const currentLatency = service.lastLatency || (rawHistory[0] ? rawHistory[0].latency : 0);
+                latencyHtml = `
+                    <div class="latency-badge">
+                        <div class="latency-dot"></div>
+                        <span class="stat-value">${currentLatency}ms</span>
+                    </div>`;
+            } else {
+                badgeHtml = `<div class="status-badge down"><i class="fas fa-exclamation-triangle"></i> OUTAGE</div>`;
+                latencyHtml = `<div class="latency-badge" style="color:var(--color-outage);"><i class="fas fa-times-circle"></i> Connection Lost</div>`;
+            }
 
             const cardHtml = `
                 <div class="service-card">
@@ -366,25 +342,29 @@
                             ${service.name}
                             <a href="${service.url}" target="_blank" class="service-link"><i class="fas fa-arrow-up-right-from-square"></i></a>
                         </div>
-                        ${badgeHtml}
+                        <div class="status-meta">
+                            ${latencyHtml}
+                            ${badgeHtml}
+                        </div>
                     </div>
                     <div class="uptime-bars">${barsHtml}</div>
                     <div class="uptime-legend">
-                        <span>60 Days Ago</span>
-                        <span>Today</span>
+                        <span>Past Checks</span>
+                        <span>Current</span>
                     </div>
                 </div>
             `;
             listContainer.innerHTML += cardHtml;
         });
 
+        // ヒーローセクション更新
         if (allOperational) {
             hero.className = 'status-hero operational';
             hero.innerHTML = `
                 <div class="status-icon-wrapper"><i class="fas fa-check-square"></i></div>
                 <div class="status-hero-text">
                     <h1>All Systems Operational</h1>
-                    <p>All services are running normally.</p>
+                    <p>All services are running normally with low latency.</p>
                 </div>
             `;
         } else {
@@ -398,62 +378,37 @@
             `;
         }
 
-        renderMonthlyHistory(incidentHistory, historyContainer);
+        renderIncidents(recentIncidents, historyContainer);
     }
 
-    function renderMonthlyHistory(incidents, container) {
-        const today = new Date();
-        const monthsToShow = 3; 
-
+    function renderIncidents(incidents, container) {
         if (incidents.length === 0) {
-            container.innerHTML = `<div class="no-incidents" style="border-bottom: 1px solid var(--border-color);">No incidents reported in the last 90 days.</div>`;
+            container.innerHTML = `<div class="incident-item" style="border:none; color:var(--text-muted);">No incidents reported in recent history.</div>`;
             return;
         }
 
-        for (let i = 0; i < monthsToShow; i++) {
-            const targetDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
-            const year = targetDate.getFullYear();
-            const month = targetDate.getMonth();
-            const monthName = targetDate.toLocaleString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
+        // 新しい順にソートして、最新5件だけ表示
+        incidents.sort((a, b) => new Date(b.time) - new Date(a.time));
+        const limitedIncidents = incidents.slice(0, 5);
 
-            const monthlyIncidents = incidents.filter(inc => {
-                const incDate = new Date(inc.time);
-                return incDate.getFullYear() === year && incDate.getMonth() === month;
+        limitedIncidents.forEach(inc => {
+            const dateStr = new Date(inc.time).toLocaleString('ja-JP', { 
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit'
             });
-
-            let contentHtml = '';
-            if (monthlyIncidents.length === 0) {
-                contentHtml = `<div class="no-incidents">No incidents reported.</div>`;
-            } else {
-                monthlyIncidents.sort((a, b) => new Date(b.time) - new Date(a.time));
-                const uniqueDates = [...new Set(monthlyIncidents.map(inc => new Date(inc.time).toDateString()))];
-                
-                uniqueDates.forEach(dateStr => {
-                    const incsOnDate = monthlyIncidents.filter(inc => new Date(inc.time).toDateString() === dateStr);
-                    const serviceNames = [...new Set(incsOnDate.map(i => i.name))].join(', ');
-                    const displayDate = new Date(dateStr).toLocaleDateString('en-US', { month:'2-digit', day:'2-digit', year:'2-digit' });
-                    
-                    contentHtml += `
-                        <div class="incident-item">
-                            <div class="incident-info">
-                                <div class="incident-title">SERVICE DISRUPTION - ${serviceNames}</div>
-                                <div class="incident-date">RESOLVED</div>
-                            </div>
-                            <div class="incident-date">${displayDate}</div>
-                        </div>
-                    `;
-                });
-            }
-
+            
             container.innerHTML += `
-                <div class="month-block">
-                    <div class="month-name">${monthName}</div>
-                    ${contentHtml}
+                <div class="incident-item">
+                    <div class="incident-title">
+                        <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i>
+                        Downtime Detected - ${inc.name}
+                    </div>
+                    <div class="incident-date">${dateStr}</div>
                 </div>
             `;
-        }
+        });
     }
 
+    // 実行
     fetchStatus();
 </script>
 
