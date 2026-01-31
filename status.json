@@ -6,6 +6,11 @@
       "url": "https://main.unilabstore.com",
       "history": [
         {
+          "time": "2026-01-31T12:27:14.878Z",
+          "status": "down",
+          "latency": 4708
+        },
+        {
           "time": "2026-01-31T11:55:58.187Z",
           "status": "down",
           "latency": 551
@@ -18322,13 +18327,18 @@
         }
       ],
       "currentStatus": "down",
-      "lastLatency": 551
+      "lastLatency": 4708
     },
     {
       "id": "web-account",
       "name": "Account Server",
       "url": "https://account.unilabstore.com",
       "history": [
+        {
+          "time": "2026-01-31T12:27:14.878Z",
+          "status": "operational",
+          "latency": 718
+        },
         {
           "time": "2026-01-31T11:55:58.187Z",
           "status": "operational",
@@ -36646,13 +36656,18 @@
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 529
+      "lastLatency": 718
     },
     {
       "id": "api-main",
       "name": "API Server",
       "url": "https://api.unilabstore.com",
       "history": [
+        {
+          "time": "2026-01-31T12:27:14.878Z",
+          "status": "operational",
+          "latency": 617
+        },
         {
           "time": "2026-01-31T11:55:58.187Z",
           "status": "operational",
@@ -54970,13 +54985,18 @@
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 468
+      "lastLatency": 617
     },
     {
       "id": "api-vrcgf",
       "name": "Storage Server for VRCGF",
       "url": "https://raw.githubusercontent.com/KawaiiAstral/VRCGFStorage/refs/heads/main/data.json",
       "history": [
+        {
+          "time": "2026-01-31T12:27:14.878Z",
+          "status": "operational",
+          "latency": 61
+        },
         {
           "time": "2026-01-31T11:55:58.187Z",
           "status": "operational",
@@ -73294,13 +73314,18 @@
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 99
+      "lastLatency": 61
     },
     {
       "id": "api-proxy",
       "name": "Proxy Server",
       "url": "https://www.cloudflare.com/",
       "history": [
+        {
+          "time": "2026-01-31T12:27:14.878Z",
+          "status": "operational",
+          "latency": 200
+        },
         {
           "time": "2026-01-31T11:55:58.187Z",
           "status": "operational",
@@ -91618,8 +91643,8 @@
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 334
+      "lastLatency": 200
     }
   ],
-  "lastUpdated": "2026/1/31 20:55:58"
+  "lastUpdated": "2026/1/31 21:27:14"
 }
