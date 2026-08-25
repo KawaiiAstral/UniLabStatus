@@ -6,6 +6,11 @@
       "url": "https://main.unilabstore.com",
       "history": [
         {
+          "time": "2026-08-25T21:04:09.169Z",
+          "status": "down",
+          "latency": 1017
+        },
+        {
           "time": "2026-08-25T20:46:05.525Z",
           "status": "down",
           "latency": 3015
@@ -6519,21 +6524,21 @@
           "time": "2026-06-26T22:00:47.793Z",
           "status": "down",
           "latency": 5041
-        },
-        {
-          "time": "2026-06-26T20:51:35.960Z",
-          "status": "down",
-          "latency": 5036
         }
       ],
       "currentStatus": "down",
-      "lastLatency": 3015
+      "lastLatency": 1017
     },
     {
       "id": "web-account",
       "name": "Account Server",
       "url": "https://account.unilabstore.com",
       "history": [
+        {
+          "time": "2026-08-25T21:04:09.169Z",
+          "status": "operational",
+          "latency": 671
+        },
         {
           "time": "2026-08-25T20:46:05.525Z",
           "status": "operational",
@@ -13048,21 +13053,21 @@
           "time": "2026-06-26T22:00:47.793Z",
           "status": "down",
           "latency": 5004
-        },
-        {
-          "time": "2026-06-26T20:51:35.960Z",
-          "status": "down",
-          "latency": 5003
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 1025
+      "lastLatency": 671
     },
     {
       "id": "api-main",
       "name": "API Server",
       "url": "https://api.unilabstore.com",
       "history": [
+        {
+          "time": "2026-08-25T21:04:09.169Z",
+          "status": "operational",
+          "latency": 745
+        },
         {
           "time": "2026-08-25T20:46:05.525Z",
           "status": "operational",
@@ -19577,21 +19582,21 @@
           "time": "2026-06-26T22:00:47.793Z",
           "status": "down",
           "latency": 5008
-        },
-        {
-          "time": "2026-06-26T20:51:35.960Z",
-          "status": "down",
-          "latency": 5007
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 675
+      "lastLatency": 745
     },
     {
       "id": "api-vrcgf",
       "name": "Storage Server for VRCGF",
       "url": "https://raw.githubusercontent.com/KawaiiAstral/VRCGFStorage/refs/heads/main/data.json",
       "history": [
+        {
+          "time": "2026-08-25T21:04:09.169Z",
+          "status": "operational",
+          "latency": 70
+        },
         {
           "time": "2026-08-25T20:46:05.525Z",
           "status": "operational",
@@ -26106,21 +26111,21 @@
           "time": "2026-06-26T22:00:47.793Z",
           "status": "operational",
           "latency": 126
-        },
-        {
-          "time": "2026-06-26T20:51:35.960Z",
-          "status": "operational",
-          "latency": 128
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 128
+      "lastLatency": 70
     },
     {
       "id": "api-proxy",
       "name": "Proxy Server",
       "url": "https://www.cloudflare.com/",
       "history": [
+        {
+          "time": "2026-08-25T21:04:09.169Z",
+          "status": "operational",
+          "latency": 538
+        },
         {
           "time": "2026-08-25T20:46:05.525Z",
           "status": "operational",
@@ -32635,16 +32640,11 @@
           "time": "2026-06-26T22:00:47.793Z",
           "status": "operational",
           "latency": 277
-        },
-        {
-          "time": "2026-06-26T20:51:35.960Z",
-          "status": "operational",
-          "latency": 439
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 272
+      "lastLatency": 538
     }
   ],
-  "lastUpdated": "2026/8/26 5:46:05"
+  "lastUpdated": "2026/8/26 6:04:09"
 }
