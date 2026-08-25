@@ -6,6 +6,11 @@
       "url": "https://main.unilabstore.com",
       "history": [
         {
+          "time": "2026-08-25T16:49:08.297Z",
+          "status": "down",
+          "latency": 759
+        },
+        {
           "time": "2026-08-25T16:05:22.707Z",
           "status": "down",
           "latency": 5039
@@ -6492,13 +6497,18 @@
         }
       ],
       "currentStatus": "down",
-      "lastLatency": 5039
+      "lastLatency": 759
     },
     {
       "id": "web-account",
       "name": "Account Server",
       "url": "https://account.unilabstore.com",
       "history": [
+        {
+          "time": "2026-08-25T16:49:08.297Z",
+          "status": "operational",
+          "latency": 758
+        },
         {
           "time": "2026-08-25T16:05:22.707Z",
           "status": "down",
@@ -12985,14 +12995,19 @@
           "latency": 477
         }
       ],
-      "currentStatus": "down",
-      "lastLatency": 5005
+      "currentStatus": "operational",
+      "lastLatency": 758
     },
     {
       "id": "api-main",
       "name": "API Server",
       "url": "https://api.unilabstore.com",
       "history": [
+        {
+          "time": "2026-08-25T16:49:08.297Z",
+          "status": "operational",
+          "latency": 765
+        },
         {
           "time": "2026-08-25T16:05:22.707Z",
           "status": "down",
@@ -19479,14 +19494,19 @@
           "latency": 478
         }
       ],
-      "currentStatus": "down",
-      "lastLatency": 5008
+      "currentStatus": "operational",
+      "lastLatency": 765
     },
     {
       "id": "api-vrcgf",
       "name": "Storage Server for VRCGF",
       "url": "https://raw.githubusercontent.com/KawaiiAstral/VRCGFStorage/refs/heads/main/data.json",
       "history": [
+        {
+          "time": "2026-08-25T16:49:08.297Z",
+          "status": "operational",
+          "latency": 64
+        },
         {
           "time": "2026-08-25T16:05:22.707Z",
           "status": "operational",
@@ -25982,6 +26002,11 @@
       "url": "https://www.cloudflare.com/",
       "history": [
         {
+          "time": "2026-08-25T16:49:08.297Z",
+          "status": "operational",
+          "latency": 387
+        },
+        {
           "time": "2026-08-25T16:05:22.707Z",
           "status": "operational",
           "latency": 372
@@ -32468,8 +32493,8 @@
         }
       ],
       "currentStatus": "operational",
-      "lastLatency": 372
+      "lastLatency": 387
     }
   ],
-  "lastUpdated": "2026/8/26 1:05:22"
+  "lastUpdated": "2026/8/26 1:49:08"
 }
